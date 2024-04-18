@@ -23,17 +23,8 @@
         android:layout_height="wrap_content"
         android:text="id value"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tvCommentBody"
+        app:layout_constraintStart_toEndOf="@id/tvId"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tvName"
-        style="@style/TextStyle_12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvIdValue" />
 
     <TextView
         android:id="@+id/tvNameValue"
@@ -42,17 +33,9 @@
         android:layout_height="wrap_content"
         android:text="name value"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tvCommentBody"
-        app:layout_constraintTop_toTopOf="@id/tvName" />
-
-    <TextView
-        android:id="@+id/tvEmail"
-        style="@style/TextStyle_12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Email"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvName" />
+        app:layout_constraintTop_toBottomOf="@id/tvIdValue" />
+
 
     <TextView
         android:id="@+id/tvEmailValue"
@@ -61,17 +44,9 @@
         android:layout_height="wrap_content"
         android:text="email value"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tvCommentBody"
-        app:layout_constraintTop_toTopOf="@id/tvEmail" />
-
-    <TextView
-        android:id="@+id/tvCommentBody"
-        style="@style/TextStyle_12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Comment"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvEmailValue" />
+        app:layout_constraintTop_toBottomOf="@id/tvNameValue" />
+
 
     <TextView
         android:id="@+id/tvCommentBodyValue"
@@ -79,7 +54,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="comment value"
+        android:background="@drawable/outline_bg"
+        android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tvCommentBody"
-        app:layout_constraintTop_toTopOf="@id/tvCommentBody" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvEmailValue" />
 </androidx.constraintlayout.widget.ConstraintLayout>

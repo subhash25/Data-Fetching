@@ -3,4 +3,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="comments_bg">#D9E4E4</color>
+    <color name="evenColor">#F0F0F0</color>
+    <color name="oddColor">#FFFFFF</color>
 </resources>
