@@ -2,11 +2,11 @@ package assignment.datafetching.listing
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -91,11 +91,13 @@ class DataListingFragment : Fragment() {
         }
         binding.rvList.adapter = listingAdapter
 
-        fetchData()
+        if(fullList == null) fetchData() else displayNextPage()
+
     }
 
     private fun onItemClicked(itemcked: DataModelItem) {
-        val action = DataListingFragmentDirections.actionDataListingFragmentToDetailsFragment(itemcked)
+        val action =
+            DataListingFragmentDirections.actionDataListingFragmentToDetailsFragment(itemcked)
         findNavController().navigate(action)
     }
 
@@ -144,16 +146,20 @@ class DataListingFragment : Fragment() {
         binding.rvList.isVisible = true
         fullList?.let {
             val startIndex = (currentPage - 1) * pageSize
-            val endIndex = minOf(startIndex + pageSize, it.size)
+            if (displayedList.size != it.size) {
+                val endIndex = minOf(startIndex + pageSize, it.size)
 
-            // Append the next page of items to the displayed list
-            displayedList.addAll(it.subList(startIndex, endIndex))
+                // Append the next page of items to the displayed list
 
-            // Update UI with the newly loaded items
+                displayedList.addAll(it.subList(startIndex, endIndex))
+
+                // Update UI with the newly loaded items
+
+
+                // Increment the current page for the next pagination
+                currentPage++
+            }
             listingAdapter.setData(displayedList)
-
-            // Increment the current page for the next pagination
-            currentPage++
         }
 
     }
