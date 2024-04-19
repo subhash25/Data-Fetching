@@ -91,7 +91,6 @@ class DataListingFragment : Fragment() {
         }
         binding.rvList.adapter = listingAdapter
 
-        // Prepare data for the adapter (you need to have data prepared or passed to the adapter)
         fetchData()
     }
 

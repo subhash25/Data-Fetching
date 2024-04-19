@@ -2,9 +2,11 @@ package assignment.datafetching.details
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
@@ -23,6 +25,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.concurrent.ConcurrentHashMap
 
 class DetailsFragment : Fragment() {
     private lateinit var binding: FragmentDetailsBinding
@@ -31,6 +34,9 @@ class DetailsFragment : Fragment() {
     private var post: DataModelItem? = null
 
     private val args: DetailsFragmentArgs by navArgs()
+    var startTime = 0L
+    var endTime = 0L
+    private val memoizedFetchDataFromApi = memoize(::fetchData)
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
@@ -71,18 +77,18 @@ class DetailsFragment : Fragment() {
         // Initialize and set adapter
         commentsAdapter = CommentsAdapter()
         binding.rvList.adapter = commentsAdapter
-
-        // Prepare data for the adapter (you need to have data prepared or passed to the adapter)
         post?.let {
-            fetchData(it.id)
+            startTime = System.currentTimeMillis()
+            memoizedFetchDataFromApi(it.id)
         }
-
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun fetchData(id:Int) {
+    private fun fetchData(id: Int) {
         GlobalScope.launch(Dispatchers.IO) {
             val dataList = fetchDataFromApi(id)
+
+            endTime = System.currentTimeMillis()
             dataList?.let {
                 mainActivity.runOnUiThread {
                     if (it.isNotEmpty()) {
@@ -99,12 +105,15 @@ class DetailsFragment : Fragment() {
     }
 
     private fun updateData(dataList: List<CommentsModelItem>) {
+        val timeToLoad = endTime-startTime
+        Log.d("TimeToLoad", "timeToLoad: $timeToLoad")
+        Toast.makeText(mainActivity,"TimeToLoad = $timeToLoad milliseconds",Toast.LENGTH_SHORT).show()
         binding.conComments.isVisible = true
         binding.progressBar.isVisible = false
         commentsAdapter.setData(dataList)
     }
 
-    private fun fetchDataFromApi(postId:Int): List<CommentsModelItem>? {
+    private fun fetchDataFromApi(postId: Int): List<CommentsModelItem>? {
         val connection =
             URL("${Constants.COMMENTS_URL}?postId=$postId").openConnection() as HttpURLConnection
         connection.requestMethod = "GET"
@@ -113,6 +122,7 @@ class DetailsFragment : Fragment() {
         return if (responseCode == HttpURLConnection.HTTP_OK) {
             val inputStream = connection.inputStream
             val responseText = inputStream.bufferedReader().use { it.readText() }
+            Log.d("Response", "responseText: $responseText")
             Gson().fromJson(responseText, Array<CommentsModelItem>::class.java).toList()
         } else {
             mainActivity.runOnUiThread {
@@ -125,4 +135,14 @@ class DetailsFragment : Fragment() {
             null
         }
     }
+
+    private fun <T, R> memoize(function: (T) -> R): (T) -> R {
+        val cache = mutableMapOf<T, R>()
+        return { arg ->
+            cache.getOrPut(arg) {
+                function(arg)
+            }
+        }
+    }
+
 }
